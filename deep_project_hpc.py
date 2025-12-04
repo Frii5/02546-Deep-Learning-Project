@@ -51,7 +51,6 @@ config = GPT2Config(
     pad_token_id=tokenizer.pad_token_id,
 )
 model = GPT2LMHeadModel(config)
-#model.resize_token_embeddings(len(tokenizer))
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
@@ -67,7 +66,7 @@ def encode(batch):
         batch["text"],
         truncation=True,
         padding="max_length",
-        max_length=64,)
+        max_length=512,)
 
 dataset = dataset.map(encode, batched=True)
 dataset.set_format(type="torch", columns=["input_ids", "attention_mask"])
@@ -118,6 +117,6 @@ eval_loss /= count
 print(f"Validation loss: {eval_loss:.4f} | Perplexity: {math.exp(eval_loss):.2f}")
 
 # Save model weights
-output_dir = f"model/{tokenizer_name}"  
+output_dir = f"model_desktop/{tokenizer_name}"  
 model.save_pretrained(output_dir)
 tokenizer.save_pretrained(output_dir)
